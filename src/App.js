@@ -9,20 +9,13 @@ function App() {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    getTransactions()
-      .then((transactions) => {
-        console.log("Transactions data:", transactions); // Log the data received from the API
-        setTransactions(transactions);
-      })
-      .catch((error) => {
-        console.error("Error fetching transactions:", error); // Log any errors that occur during data fetching
-      });
+    getTransactions().then(setTransactions);
   }, []);
 
   async function getTransactions() {
     const url = process.env.REACT_APP_API_URL + "/transactions";
     const response = await fetch(url);
-    return response.json();
+    return await response.json();
   }
 
   function addNewTransaction(ev) {
@@ -47,11 +40,18 @@ function App() {
       });
     });
   }
+  let balance = 0;
+  for (const transaction of transactions) {
+    balance = balance + transaction.price;
+  }
+  balance = balance.toFixed(2);
+  const fraction = balance.split(".")[1];
+  balance = balance.split(".")[0];
   return (
     <main>
       <h1>
-        $400<span>.00</span>
-        {transactions.length}
+        ₹{balance}
+        <span>.{fraction}</span>
       </h1>
       <form onSubmit={addNewTransaction}>
         <div className="basics">
