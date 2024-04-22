@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  mongo_db:
+    container_name: db_container
+    image: mongodb/atlas # or mongo:latest
+    # command: |
+    #   /bin/bash -c "atlas deployments setup --type local --port 27778 --bindIpAll --username surajmoolya1 --password mK7n0tNZnqtRbKA1 --force && tail -f /dev/null"
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 27778:27778
+
+  api:
+    build: .
+    ports:
+      - 4000:3000
+    environment:
+      MONGO_URL: "mongodb+srv://surajmoolya1:mK7n0tNZnqtRbKA1@cluster0.ddxymtp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+    depends_on:
+      - mongo_db
+
+volumes:
+  mongo_db: {}
